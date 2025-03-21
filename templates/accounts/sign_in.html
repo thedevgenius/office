@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login | Office Orbit{% endblock title %}
+
+{% block main %}
+    <style>
+        .logo{
+            max-height: 100px;
+            display: inline-block;
+            margin: 0 auto;
+            margin-bottom: 10px;
+        }
+    </style>
+    <div class="flex items-center justify-center grow bg-center bg-no-repeat page-bg">
+        <div class="card max-w-[370px] w-full">
+            <form method="post" novalidate="novalidate" class="card-body flex flex-col gap-5 p-10" id="sign_in_form">
+                {% csrf_token %}
+                <div class="text-center">
+                    <img src="{% static 'media/images/grand-logo.png' %}" alt="" class="logo">
+                    <h3 class="text-lg font-medium text-gray-900 leading-none mb-2.5">Sign in</h3>
+                </div>
+                
+                <div class="flex flex-col gap-1">
+                    <label class="form-label font-normal text-gray-900" for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+                    {{ form.username }}
+                    {{ form.username.errors }}
+                </div>
+                <div class="flex flex-col gap-1">
+                    <div class="flex items-center justify-between gap-1">
+                        <label class="form-label font-normal text-gray-900">Password</label>
+                        <a class="text-2sm link shrink-0" href="#">Forgot Password?</a>
+                    </div>
+                    <div class="input" data-toggle-password="true">
+                        {{ form.password }}
+                        <button class="btn btn-icon" data-toggle-password-trigger="true" type="button">
+                            <i class="ki-filled ki-eye text-gray-500 toggle-password-active:hidden"></i>
+                            <i class="ki-filled ki-eye-slash text-gray-500 hidden toggle-password-active:block"></i>
+                        </button>
+                    </div>
+                    {{ form.password.errors }}
+                </div>
+                <label class="checkbox-group">
+                    <input class="checkbox checkbox-sm" name="check" type="checkbox" value="1" />
+                    <span class="checkbox-label">Remember me</span>
+                </label>
+                <button class="btn btn-primary flex justify-center grow" type="submit">Sign In</button>
+            </form>
+        </div>
+    </div>
+{% endblock main %}

@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html class="h-full" data-theme="true" data-theme-mode="light" lang="en">
+<head>
+    <base href="../../">
+    <title>{% block title %}{% endblock title %}</title>
+    <meta charset="utf-8">
+    <meta content="follow, index" name="robots">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <link rel="icon" href="/static/media/images/gcu-favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap">
+    <link rel="stylesheet" href="{% static 'vendors/apexcharts/apexcharts.css' %}">
+    <link rel="stylesheet" href="{% static 'vendors/keenicons/styles.bundle.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <style>
+        .errorlist{
+            color: #f8285a;
+            font-size: 12px;
+        }
+        .text-white{
+            color: #fff;
+        }
+        .gtab-content{
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="flex h-full demo1 sidebar-fixed header-fixed bg-[#fefefe] dark:bg-coal-500">
+    <!--begin::Theme mode setup on page load-->
+    <script>
+        const defaultThemeMode = 'light'; // light|dark|system
+        let themeMode;
+
+        if (document.documentElement) {
+            if (localStorage.getItem('theme')) {
+                themeMode = localStorage.getItem('theme');
+            } else if (document.documentElement.hasAttribute('data-theme-mode')) {
+                themeMode = document.documentElement.getAttribute('data-theme-mode');
+            } else {
+                themeMode = defaultThemeMode;
+            }
+
+            if (themeMode === 'system') {
+                themeMode = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+
+            document.documentElement.classList.add(themeMode);
+        }
+    </script>
+    <!--end::Theme mode setup on page load-->
+    <!--begin::Page layout-->
+    <div class="flex grow">
+        
+        {% block main %}
+            
+        {% endblock main %}
+            
+    </div>
+    
+    <!--end::Page layout-->
+    <!--begin::Page scripts-->
+    <script src="{% static 'js/core.bundle.js' %}"></script>
+    <script src="{% static 'vendors/apexcharts/apexcharts.min.js' %}"></script>
+    <script src="{% static 'js/widgets/general.js' %}"></script>
+    <script src="{% static 'js/layouts/demo1.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}
+        
+    {% endblock extra_js %}
+        
+    <!--end::Page scripts-->
+</body>
+
+</html>

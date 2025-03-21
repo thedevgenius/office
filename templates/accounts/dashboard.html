@@ -1,0 +1,25 @@
+{% extends 'base_site.html' %}
+
+{% block title %}Dashboard | Grand Crest University{% endblock title %}
+
+{% block content %}
+    <!-- begin: container -->
+    <div class="container-fixed">
+        <div class="flex flex-wrap items-center lg:items-end justify-between gap-5 pb-7.5">
+            <div class="flex flex-col justify-center gap-2">
+                <h1 class="text-xl font-semibold leading-none text-gray-900">Welcome, <span class="text-primary">{{ request.user.get_full_name }}</span></h1>
+                <div class="flex items-center gap-2 text-sm font-medium text-gray-600">Central Hub for Your Education</div>
+            </div>
+        </div>
+    </div>
+    <!-- end: container -->
+
+    <!-- begin: container -->
+    <div class="container-fixed">
+        
+    
+            
+    </div>
+    <!-- end: container -->
+    
+{% endblock content %}
