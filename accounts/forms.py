@@ -1,5 +1,6 @@
 from datetime import datetime, time, timedelta
 from django import forms
+from django.utils import timezone
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 
 
@@ -43,30 +44,19 @@ class UserAddForm(forms.ModelForm):
 
 class TeamBookForm(forms.Form):
     id = forms.IntegerField(widget=forms.HiddenInput())
+    # hour = forms.ChoiceField(choices=[])
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        now = datetime.now().time()
+        now = timezone.localtime()
         
-        start_hour = max(now.hour, 9)
-        start_minute = max((now.minute // 15 + 1) * 15, 60) if now.hour >= 9 else 60
 
-        if start_minute == 60:
-            start_time = time(start_hour + 1, 0)
-        else:
-            start_time = time(start_hour, start_minute)
+        hour_options = [(i, i) for i in range(now.hour, 20)]
+        self.fields['hour'] = forms.ChoiceField(choices=hour_options, label='Hour', widget=forms.Select(attrs={'class':'select'}))
 
-        end_time = time(19, 15)
-
-        time_options = []
-        current_time = start_time
-        while current_time <= end_time:
-            time_options.append((current_time.strftime('%H:%M'), current_time.strftime('%H:%M')))
-            current_time = (datetime.combine(datetime.today(), current_time) + timedelta(minutes=15)).time()  # Increment by 15 minutes
-
-        # Add the time options to the form field
-        self.fields['time'] = forms.ChoiceField(choices=time_options)
+        minute_options = [(i, f"{i:02d}") for i in range(0, 60)]
+        self.fields['minute'] = forms.ChoiceField(choices=minute_options, label='Minute', widget=forms.Select(attrs={'class':'select'}))
     
 class AssistForm(TeamBookForm):
     manager = forms.ModelChoiceField(queryset=User.actives.filter(role='PM'), widget=forms.Select(attrs={'class':'select'}))

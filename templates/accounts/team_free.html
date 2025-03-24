@@ -1,13 +1,19 @@
 <form method="post" id="team_free_form">
     {{ form.id }}
-    <label for="time" class="form-label mb-2">Free Till</label>
-    <select name="time" id="time" class="select">
-        {% for value, label in form.time.field.choices %}
-            <option value="{{ value }}">{{ label }}</option>
-        {% endfor %}
-    </select>
+    <h3 class="mb-2 text-gray-900">Free Till</h3>
+    <div class="grid grid-cols-2 gap-5">
+        <div class="col-span-1">
+            <label for="{{ form.hour.id_for_label }}" class="form-label mb-1">{{ form.hour.label }}</label>
+            {{ form.hour }}
+        </div>
+        <div class="col-span-1">
+            <label for="{{ form.minute.id_for_label }}" class="form-label mb-1">{{ form.minute.label }}</label>
+            {{ form.minute }}
+        </div>
+    </div>        
     <div class="flex justify-end mt-5">
         <button type="submit" class="btn btn-primary">FREE</button>
     </div>
 </form>
 
+<div class=""></div>

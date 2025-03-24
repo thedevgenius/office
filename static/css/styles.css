@@ -4696,6 +4696,9 @@ label.rating-label {
   z-index: 20;
 }
 
+.z-200 {
+  z-index: 200;
+}
 .order-1 {
   order: 1;
 }

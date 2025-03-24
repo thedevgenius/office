@@ -1,3 +1,6 @@
-// {
+{
+    "editor.fontFamily": "Fira Code Light",
+    "editor.fontSize": 14
+} // {
 //     "editor.fontFamily": "\"M PLUS Code Latin Light\", monospace"
 // }

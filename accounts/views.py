@@ -6,13 +6,14 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.template.loader import render_to_string
-from datetime import datetime
-
+from datetime import datetime, time, timedelta
+from django.utils import timezone
 
 from .forms import SigninForm, UserAddForm, TeamBookForm, AssistForm
 from .models import User
 from .utils import generate_random_color
-from .tasks import my_task
+from .tasks import update_user_status
+
 # Create your views here.
 
 class SigninView(LoginView):
@@ -64,17 +65,32 @@ class FreeView(View):
     def post(self, request):
         id = request.POST.get('id')
         user = User.objects.get(id=id)
-        time = request.POST.get('time')
-        assigned_till = datetime.combine(datetime.today(), datetime.strptime(time, "%H:%M").time())
+        hour = int(request.POST.get('hour'))
+        minute = int(request.POST.get('minute'))
+        free_time = time(hour, minute)
+        assigned_till = timezone.make_aware(datetime.combine(datetime.today(), free_time))
+
+        # Ensure assigned_till is in the future
+        if assigned_till <= timezone.now():
+            assigned_till += timedelta(days=1)  # Schedule for the next day if time is in the past
+
         if user.reporting_manager == self.request.user:
             user.status = 'AVL'
             user.assigned_till = assigned_till
             user.save()
+
+            # Schedule the task only if assigned_till is in the future
+            # if assigned_till > timezone.now():
+            #     update_user_status.apply_async(args=[id], eta=assigned_till)
+            #     print(f"Task scheduled to update user status at {assigned_till}")
+            # else:
+            #     print("Assigned time is in the past. Task not scheduled.")
         else:
             user.status = 'AVL'
             user.assigned_till = None
             user.assigned_to = None
             user.save()
+
         return JsonResponse({'success': True})
 
 
@@ -86,12 +102,14 @@ class AssistView(View):
         html = render_to_string('accounts/team_assist.html', {'form':form})
         return JsonResponse({'success':True, 'html':html})
     
-    def post(self, request, **kwargs):
+    def post(self, request):
         id = request.POST.get('id')
         user = User.objects.get(id=id)
-        time = request.POST.get('time')
+        hour = int(request.POST.get('hour'))
+        minute = int(request.POST.get('minute'))
+        free_time = time(hour, minute)
+        assigned_till = datetime.combine(datetime.today(), free_time)
         assigned_to = User.objects.get(id=request.POST.get('manager'))
-        assigned_till = datetime.combine(datetime.today(), datetime.strptime(time, "%H:%M").time())
         if user.reporting_manager == self.request.user:
             user.status = 'AST'
             user.assigned_to = assigned_to
