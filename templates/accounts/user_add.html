@@ -6,7 +6,7 @@
     <div class="flex [.header_&amp;]:below-lg:hidden items-center gap-1.25 text-xs lg:text-sm font-medium mb-2.5 lg:mb-0" data-reparent="true" data-reparent-mode="prepend|lg:prepend" data-reparent-target="#content_container|lg:#header_container">
         <a href="{% url 'dashboard' %}" class="text-gray-600 hover:text-primary">Dashboard</a>
         <i class="ki-filled ki-right text-gray-500 text-3xs"></i>
-        <a href="#" class="text-gray-600 hover:text-primary">Employees</a>
+        <a href="{% url 'employee_list' %}" class="text-gray-600 hover:text-primary">Employees</a>
         <i class="ki-filled ki-right text-gray-700 text-3xs"></i>
         <span class="text-gray-800">Add New Employee</span>
     </div>
@@ -15,6 +15,31 @@
 {% block content %}
     <!-- begin: container -->
     <div class="container-fixed">
+        <form method="post" novalidate="novalidate">
+            {% csrf_token %}
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Add New Employee</h3>
+                </div>
+                <div class="card-body">
+                    <div class="grid grid-cols-2 gap-5">
+                        {% for field in form %}
+                            <div class="col-span-1">
+                                <label for="{{ field.id_for_label }}" class="form-label mb-2">{{ field.label }}<span class="text-danger">*</span></label>
+                                {{ field }}
+                                {{ field.errors }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                        
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-3 mt-5">
+                <button class="btn btn-secondary">CANCEL</button>
+                <button class="btn btn-primary">SUBMIT</button>
+            </div>
+        </form>
         
     
             

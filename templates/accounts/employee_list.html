@@ -1,0 +1,100 @@
+{% extends 'base_site.html' %}
+
+{% block title %}All Employees | Office Orbit{% endblock title %}
+
+{% block breadcrumb %}
+    <div class="flex [.header_&amp;]:below-lg:hidden items-center gap-1.25 text-xs lg:text-sm font-medium mb-2.5 lg:mb-0" data-reparent="true" data-reparent-mode="prepend|lg:prepend" data-reparent-target="#content_container|lg:#header_container">
+        <a href="{% url 'dashboard' %}" class="text-gray-600 hover:text-primary">Dashboard</a>
+        <i class="ki-filled ki-right text-gray-500 text-3xs"></i>
+        <span class="text-gray-800">Employees</span>
+    </div>
+{% endblock breadcrumb %}
+
+{% block content %}
+    <!-- begin: container -->
+    <div class="container-fixed">
+        <div class="card card-grid min-w-full">
+            <div class="card-header flex-wrap">
+                <h3 class="card-title">All Employee</h3>
+                <a href="{% url 'employee_add' %}" class="btn btn-sm btn-primary"><i class="ki-filled ki-plus-squared"></i> Add Employee</a>
+            </div>
+            <div class="card-body">
+                <div data-datatable="false" id="employee_table">
+                    <div class="scrollable-x-auto">
+                        <table class="table table-auto table-border" data-datatable-table="true">
+                            <thead>
+                                <tr>
+                                    <th class="text-left">
+                                        <span class="sort">
+                                            <span class="sort-label">Employee</span>
+                                            <span class="sort-icon"></span>
+                                        </span>
+                                    </th>
+                                    <th class="text-left">
+                                        <span class="sort">
+                                            <span class="sort-label">Reporting Manager</span>
+                                            <span class="sort-icon"></span>
+                                        </span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in users %}
+                                    <tr>
+                                        <td>
+                                            <div class="flex items-center gap-2">
+                                                <div class="size-9 rounded-full flex justify-center items-center" style="background-color: {{user.profile_color}};">
+                                                    <span class="text-white text-lg">{{user.get_first_letter}}</span>
+                                                </div>
+                                                <div>
+                                                    <h3 class="text-gray-800">{{ user.get_full_name }}</h3>
+                                                    <span class="text-gray-500 text-xs">{{ user.designation }}</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {{ user.reporting_manager }}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div
+                        class="card-footer justify-center md:justify-between flex-col md:flex-row gap-3 text-gray-600 text-2sm font-medium">
+                        <div class="flex items-center gap-2">
+                            Show
+                            <select class="select select-sm w-16" data-datatable-size="true" name="perpage">
+                            </select>
+                            per page
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <span data-datatable-info="true">
+                            </span>
+                            <div class="pagination" data-datatable-pagination="true">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end: container -->
+    
+{% endblock content %}
+
+{% block extra_js %}
+    <script>
+        $(document).ready(function(){
+            const datatableEl = document.querySelector('#employee_table');
+            const options = {
+                pageSize: 5,
+                stateSave: true
+            };
+            const datatable = new KTDataTable(datatableEl, options);
+
+            datatable.reload();
+            datatable.showSpinner();
+        })
+    </script>        
+{% endblock extra_js %}

@@ -4,22 +4,168 @@
 
 {% block content %}
     <!-- begin: container -->
-    <div class="container-fixed">
+    <!-- <div class="container-fixed">
         <div class="flex flex-wrap items-center lg:items-end justify-between gap-5 pb-7.5">
             <div class="flex flex-col justify-center gap-2">
                 <h1 class="text-xl font-semibold leading-none text-gray-900">Welcome, <span class="text-primary">{{ request.user.get_full_name }}</span></h1>
                 <div class="flex items-center gap-2 text-sm font-medium text-gray-600">Central Hub for Your Education</div>
             </div>
         </div>
-    </div>
+    </div> -->
     <!-- end: container -->
 
     <!-- begin: container -->
     <div class="container-fixed">
-        
+        <div class="grid grid-cols-2 gap-5">
+            <div class="col-span-1"></div>
+            <div class="col-span-1">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Team Status</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="grid gap-2">
+                            {% for team in booked %}
+                                {% include 'accounts/team_object.html' %}
+                            {% endfor %}
+
+                            {% for team in teams %}
+                                {% include 'accounts/team_object.html' %}
+                            {% endfor %}    
+                        </div>
+                    </div>
+                </div>
+
+                {% if resources %}
+                    <div class="card mt-5">
+                        <div class="card-header">
+                            <h3 class="card-title">Available Resourses</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="grid gap-2">
+                                {% for team in resources %}
+                                    {% include 'accounts/team_object.html' %}
+                                {% endfor %}
+                                    
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
     
             
     </div>
     <!-- end: container -->
     
+    <div class="modal" data-modal="true" id="my_modal">
+        <div class="modal-content max-w-[600px] top-[20%]">
+            <div class="modal-header justify-end">
+                <button class="btn btn-xs btn-icon btn-light" data-modal-dismiss="true"><i class="ki-outline ki-cross"></i></button>
+            </div>
+            <div class="modal-body" id="modal_body">
+                
+            </div>
+        </div>
+    </div>
+
 {% endblock content %}
+
+
+{% block extra_js %}
+    <script>
+        $(document).ready(function(){
+            $(document).on('click', '.team-free', function(e){
+                e.preventDefault();
+                var id = $(this).data('id');                
+                $.ajax({
+                    url: '{% url "free" %}',
+                    type: 'GET',
+                    data: {
+                        'id' : id
+                    },
+                    success: function(res){
+                        const modalEl = document.querySelector('#my_modal');
+                        const modal = KTModal.getInstance(modalEl);
+                        $('#modal_body').html(res.html);
+                        modal.show();
+                    }
+                })
+            });
+
+            $(document).on('submit', '#team_free_form', function(e){
+                e.preventDefault();
+                var form = $(this)
+                var data = form
+                $.ajax({
+                    url: '{% url "free" %}',
+                    type: 'POST',
+                    data: form.serialize(),
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    success: function(res){
+                        console.log(res);
+                        location.reload();
+                    }
+                })
+            });
+
+            $(document).on('click', '.team-book', function(e){
+                e.preventDefault();
+                var id = $(this).data('id');                
+                $.ajax({
+                    url: '{% url "book" %}',
+                    type: 'POST',
+                    data: {
+                        'id' : id
+                    },
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    success: function(res){
+                        location.reload()
+                    }
+                })
+            });
+
+            $(document).on('click', '.team-assist', function(e){
+                e.preventDefault();
+                var id = $(this).data('id');                
+                $.ajax({
+                    url: '{% url "assist" %}',
+                    type: 'GET',
+                    data: {
+                        'id' : id
+                    },
+                    success: function(res){
+                        const modalEl = document.querySelector('#my_modal');
+                        const modal = KTModal.getInstance(modalEl);
+                        $('#modal_body').html(res.html);
+                        modal.show();
+                    }
+                })
+            });
+        
+            $(document).on('submit', '#team_assist_form', function(e){
+                e.preventDefault();
+                var form = $(this)
+                var data = form
+                $.ajax({
+                    url: '{% url "assist" %}',
+                    type: 'POST',
+                    data: form.serialize(),
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    success: function(res){
+                        console.log(res);
+                        location.reload();
+                    }
+                })
+            });
+        });
+        
+    </script>
+{% endblock extra_js %}
+    

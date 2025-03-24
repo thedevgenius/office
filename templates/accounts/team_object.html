@@ -1,0 +1,46 @@
+<div class="flex items-center justify-between border border-gray-200 rounded-xl gap-2 px-4 py-4 bg-secondary-clarity">
+    <div class="flex items-center gap-2">
+        <div class="size-9 rounded-full flex justify-center items-center" style="background-color: {{team.profile_color}};">
+            <span class="text-white text-lg">{{team.get_first_letter}}</span>
+        </div>
+        <div class="flex flex-col">
+            <a class="text-sm font-medium text-gray-900 hover:text-primary-active mb-px" href="#">{{ team.get_full_name }}</a>
+            <span class="text-2sm text-gray-700">{{ team.designation }}</span>
+        </div>
+    </div>
+    <div class="flex items-center gap-2">
+        <span class="badge badge-sm badge-outline badge-{{ team.get_status_class }}">{{ team.get_status }}</span>
+        
+        {% if team.status != 'ABS' %}
+            <div class="dropdown" data-dropdown="true" data-dropdown-trigger="click">
+                <button class="dropdown-toggle btn btn-sm btn-icon btn-light btn-clear"><i class="ki-filled ki-dots-vertical"></i></button>
+                <div class="dropdown-content w-full max-w-32">
+                    <div class="menu menu-default flex flex-col w-full">
+                        {% if team.status == 'WRK' %}
+                            <div class="menu-item">
+                                <button class="menu-link team-free" data-id="{{ team.id }}"><span class="menu-title">Free</span></button>
+                            </div>
+                            <div class="menu-item">
+                                <button class="menu-link team-assist" data-id="{{ team.id }}"><span class="menu-title">Assist</span></button>
+                            </div>
+                        {% elif team.status == 'AVL' and team.is_pool == False and team.reporting_manager == request.user%}
+                            <div class="menu-item">
+                                <button class="menu-link team-book" data-id="{{ team.id }}"><span class="menu-title">Book</span></button>
+                            </div>
+                        {% elif team.status == 'AVL' and team.is_pool == True %}
+                            <div class="menu-item">
+                                <button class="menu-link pool-book" data-id="{{ team.id }}"><span class="menu-title">Book</span></button>
+                            </div>
+                        {% elif team.status == 'AVL' and team.is_pool == False and team.reporting_manager != request.user %}
+                            <div class="menu-item">
+                                <button class="menu-link another-book" data-id="{{ team.id }}"><span class="menu-title">Book</span></button>
+                            </div>
+                        {% endif %}
+                            
+                        
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>

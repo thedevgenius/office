@@ -1,0 +1,13 @@
+<form method="post" id="team_free_form">
+    {{ form.id }}
+    <label for="time" class="form-label mb-2">Free Till</label>
+    <select name="time" id="time" class="select">
+        {% for value, label in form.time.field.choices %}
+            <option value="{{ value }}">{{ label }}</option>
+        {% endfor %}
+    </select>
+    <div class="flex justify-end mt-5">
+        <button type="submit" class="btn btn-primary">FREE</button>
+    </div>
+</form>
+
